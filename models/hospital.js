@@ -8,19 +8,7 @@ const hospitalSchema = new Schema({
     email:String,
     phone:Number,
     logs:[
-        {
-            patient:{
-                type:Schema.Types.ObjectId,
-                ref:"Patient"
-            },
-            doctor:{
-                type:Schema.Types.ObjectId,
-                ref:"Patient"
-            },
-            date:{
-                type:Date,
-            }
-        }
+       {type:Schema.Types.ObjectId,ref:"Logs"}
     ],
     doctors:[
         {

@@ -4,9 +4,10 @@ const Doctor = require('../models/doctor.js')
 const mongoose = require('mongoose')
 const jwt=  require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+
 module.exports.signUp = async(req,res)=>{
    
-    const {name,email,password,phone} = req.body
+    const {name,email,password,phone,location} = req.body
     try {
        
         const existinguser = await Patient.findOne({email})
@@ -14,7 +15,7 @@ module.exports.signUp = async(req,res)=>{
            return res.status(400).send("User found already")
         }
         const hashPassword = await bcrypt.hash(password,12);
-        const newUser =  new Patient ({name,email,phone,password:hashPassword})
+        const newUser =  new Patient ({name,email,phone,password:hashPassword,location})
         await newUser.save();
         const token = jwt.sign({email:newUser.email,id:newUser._id},'token',{expiresIn:'1h'})
         res.status(200).json({result:newUser,token})
@@ -40,3 +41,4 @@ module.exports.login = async(req,res) =>{
         res.status(500).json(err.message)
     }
 }
+

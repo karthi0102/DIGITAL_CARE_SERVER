@@ -6,6 +6,7 @@ const doctorSchema = new Schema({
         pay:Number,
         phone:String,
         isOpen:Boolean,
+        specialisation:[String],
         token:[
             {
             type:Schema.Types.ObjectId,

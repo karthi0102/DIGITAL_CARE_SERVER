@@ -7,20 +7,9 @@ const patientSchema = new Schema({
     phone:Number,
     email:String,
     records:[String],
-    logs:[
-        {
-            patient:{
-                type:Schema.Types.ObjectId,
-                ref:"Patient"
-            },
-            doctor:{
-                type:Schema.Types.ObjectId,
-                ref:"Patient"
-            },
-            date:{
-                type:Date,
-            }
-        }
+    location:String,
+   logs:[
+       {type:Schema.Types.ObjectId,ref:"Logs"}
     ],
     joinedOn:{
         type:Date,
