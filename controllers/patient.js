@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs')
 
 module.exports.signUp = async(req,res)=>{
    
-    const {name,email,password,phone,location} = req.body
+    const {name,email,password,phone} = req.body
     try {
        
         const existinguser = await Patient.findOne({email})
@@ -15,7 +15,7 @@ module.exports.signUp = async(req,res)=>{
            return res.status(400).send("User found already")
         }
         const hashPassword = await bcrypt.hash(password,12);
-        const newUser =  new Patient ({name,email,phone,password:hashPassword,location})
+        const newUser =  new Patient ({name,email,phone,password:hashPassword})
         await newUser.save();
         const token = jwt.sign({email:newUser.email,id:newUser._id},'token',{expiresIn:'1h'})
         res.status(200).json({result:newUser,token})
@@ -27,7 +27,7 @@ module.exports.signUp = async(req,res)=>{
 module.exports.login = async(req,res) =>{
     const {email,password} = req.body;
     try{
-        const existinguser = await Patient.findOne({email}).populate('enrolled')
+        const existinguser = await Patient.findOne({email})
         if(!existinguser){
             return res.status(404).json({message:"User not found..."})
         }
