@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const jwt=  require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-module.exports.signUp = async(req,res)=>{
+module.exports.signup = async(req,res)=>{
    
     const {name,email,password,phone} = req.body
     try {
