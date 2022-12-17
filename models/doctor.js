@@ -5,10 +5,16 @@ const doctorSchema = new Schema({
         name:String,
         email:String,
         phone:String,
-        specialisation:[String],
+        specialisation:String,
         pay:Number,
         image:String,
-        isOpen:Boolean,
+        count:Number,
+        start:Date,
+        end:Date,
+        isOpen:{
+            type:Boolean,
+            default:false
+        },
         token:[
             {
             type:Schema.Types.ObjectId,
