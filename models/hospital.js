@@ -6,7 +6,7 @@ const hospitalSchema = new Schema({
     password:String,
     address:String,
     email:String,
-    phone:Number,
+    phone:String,
     logs:[
        {type:Schema.Types.ObjectId,ref:"Logs"}
     ],

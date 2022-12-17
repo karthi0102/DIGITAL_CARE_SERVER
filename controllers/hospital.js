@@ -7,19 +7,22 @@ const bcrypt = require('bcryptjs')
 
 module.exports.signUp = async(req,res)=>{
    
-    const {name,email,password,phone} = req.body
+    const {name,email,phone,address,password} = req.body
     try {
-       
-        const existinguser = await Patient.findOne({email})
+        const existinguser = await Hospital.findOne({email})
+        console.log(name,email,phone,address,password)
         if(existinguser){
-           return res.status(400).send("User found already")
+            return res.status(400).send("User found already")
         }
         const hashPassword = await bcrypt.hash(password,12);
-        const newUser =  new Patient ({name,email,phone,password:hashPassword})
+        conaole.log(name,email,phone,address,password)
+        const newUser =  new Hospital({name,email,phone,address,password:hashPassword})
         await newUser.save();
+        console.log(newUser)
         const token = jwt.sign({email:newUser.email,id:newUser._id},'token',{expiresIn:'1h'})
         res.status(200).json({result:newUser,token})
     } catch (err) {
+        console.log(err.message)
         res.status(500).json('Something went worng...')
     }
 }
@@ -27,7 +30,7 @@ module.exports.signUp = async(req,res)=>{
 module.exports.login = async(req,res) =>{
     const {email,password} = req.body;
     try{
-        const existinguser = await Patient.findOne({email}).populate('enrolled')
+        const existinguser = await Hospital.findOne({email}).populate('enrolled')
         if(!existinguser){
             return res.status(404).json({message:"User not found..."})
         }

@@ -3,10 +3,12 @@ const {Schema}=mongoose
 
 const doctorSchema = new Schema({
         name:String,
-        pay:Number,
+        email:String,
         phone:String,
-        isOpen:Boolean,
         specialisation:[String],
+        pay:Number,
+        image:String,
+        isOpen:Boolean,
         token:[
             {
             type:Schema.Types.ObjectId,
