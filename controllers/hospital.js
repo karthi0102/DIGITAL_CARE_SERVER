@@ -129,3 +129,23 @@ module.exports.deleteHospital = async(req,res) =>{
         res.status(500).json(err.message)
     }
 }
+
+module.exports.getAll =async(req,res)=>{
+    try {
+        const hospitals = await Hospital.find({})
+        res.status(200).json(hospitals)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}
+
+module.exports.getDoctors=async(req,res)=>{
+    const {id}=req.params
+    try {
+        const hospitals = await Hospital.findById(id).populate('doctors')
+        res.status(200).send(hospitals)
+        
+    } catch (error) {
+        res.status(200).send(error)
+    }
+}
