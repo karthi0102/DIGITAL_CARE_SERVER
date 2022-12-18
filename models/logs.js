@@ -4,7 +4,7 @@ const {Schema}=mongoose
 const logsSchema = new Schema({
         doctorId:{
             type:Schema.Types.ObjectId,
-            ref:"Docotor"
+            ref:"Doctor"
         },
         hospitalId:{
             type:Schema.Types.ObjectId,
