@@ -4,7 +4,7 @@ const {Schema}=mongoose
 const logsSchema = new Schema({
         doctorId:{
             type:Schema.Types.ObjectId,
-            ref:"Docotor"
+            ref:"Doctor"
         },
         hospitalId:{
             type:Schema.Types.ObjectId,
@@ -15,7 +15,8 @@ const logsSchema = new Schema({
             ref:"Patient"
         },
         date:{
-            type:Date
+            type:Date,
+            default:Date.now
         }
 })
 

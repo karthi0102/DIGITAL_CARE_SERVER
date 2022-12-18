@@ -42,3 +42,28 @@ module.exports.login = async(req,res) =>{
     }
 }
 
+module.exports.getLogs = async(req,res)=>{
+    const {id}=req.params
+    try {
+        const patient = await Patient.findById(id).populate({
+        path: 'logs',
+        populate: {
+            path: 'doctorId',      
+        }
+    }).populate({
+        path: 'logs',
+        populate: {
+            path: 'hospitalId',
+        }
+    }).populate({
+        path: 'logs',
+        populate: {
+            path: 'patientId',
+        }
+    })
+    res.status(200).json(patient.logs)
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send(error.message)
+    }
+}
