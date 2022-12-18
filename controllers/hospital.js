@@ -61,11 +61,14 @@ module.exports.addDoctor = async(req,res) =>{
 }
 
 module.exports.MakeAvailable = async(req,res) =>{
-    const {Did,count,Hid} =req.params
+    const {Did,Hid} =req.params
+    const {count,start,end}= req.body
     try{
-        const doctor = await Doctor.findOneAndUpdate({_id:Did},{count:count,isOpen:true})
-        doctor.save()
-        const hospital = await Hospital.findById(Hid).populate('logs').populate('doctors')
+        console.log(count,start,end,Did,Hid)
+        const doctor = await Doctor.findOneAndUpdate({_id:Did},{count:parseInt(count),start:start,end:end,isOpen:true})
+        console.log(doctor)
+        await doctor.save()
+        const hospital = await Hospital.findById(Hid).populate('doctors')
         res.status(200).json(hospital)
     }catch(err){
         res.status(500).json(err.message)
@@ -84,11 +87,12 @@ module.exports.getDoctor = async(req,res) =>{
 
 module.exports.updateDoctor = async(req,res) =>{
     const {Did,Hid} =req.params
-    const {name,email,phone,specialisaton,pay,image} = req.body
+    const {name,email,phone,specialisation,pay,img} = req.body
     try{
-        const doctor = await Doctor.findOneAndUpdate({_id:Did},{name,email,phone,specialisaton,pay,image})
+        const doctor = await Doctor.findOneAndUpdate({_id:Did},{name,email,phone,specialisation,pay,image:img})
         doctor.save()
-        const hospital = await Hospital.findById(Hid).populate('logs').populate('doctors')
+        console.log(doctor)
+        const hospital = await Hospital.findById(Hid).populate('doctors')
         res.status(200).json(hospital)
     }catch(err){
         res.status(500).json(err.message)
