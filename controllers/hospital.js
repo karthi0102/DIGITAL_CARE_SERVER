@@ -154,22 +154,22 @@ module.exports.getDoctors=async(req,res)=>{
 
 
 module.exports.bookToken = async(req,res)=>{
-    const {hid,pid,did}=req.params
+    const {hid,pid,did}=req.body
     try {
         const hospital = await Hospital.findById(hid);
         const doctor = await Doctor.findById(did)
         const patient = await Patient.findById(pid)
-        doctor.token.add(pid)
-        doctor.save()
-        let date = new Date()
-        const newlog = new Logs({doctorId:did,hospitalId:hid,patientId:pid,date})
-        newlog.save()
-        hospital.logs.add(newlog._id)
-        patient.logs.add(newlog._id)
-        await hospital.save()
-        await patient.save()
+        doctor.token.push(patient)
+        await doctor.save()
+        // const newlog = new Logs({doctorId:did,hospitalId:hid,patientId:pid})
+        // newlog.save()
+        // hospital.logs.push(newlog)
+        // patient.logs.push(newlog)
+        // await hospital.save()
+        // await patient.save()
         res.status(200).send("Token Booked")
     } catch (error) {
+        console.log(error.message)
         res.status(500).send(error.message)
     }
 }

@@ -15,7 +15,8 @@ const logsSchema = new Schema({
             ref:"Patient"
         },
         date:{
-            type:Date
+            type:Date,
+            default:Date.now
         }
 })
 
