@@ -9,8 +9,8 @@ const doctorSchema = new Schema({
         pay:Number,
         image:String,
         count:Number,
-        start:Date,
-        end:Date,
+        start:String,
+        end:String,
         isOpen:{
             type:Boolean,
             default:false
