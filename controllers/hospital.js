@@ -2,6 +2,7 @@ const Patient = require('../models/patient.js')
 const Hospital = require('../models/hospital.js')
 const Doctor = require('../models/doctor.js')
 const mongoose = require('mongoose')
+const Logs = require('../models/logs')
 const jwt=  require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
@@ -147,5 +148,28 @@ module.exports.getDoctors=async(req,res)=>{
         
     } catch (error) {
         res.status(200).send(error)
+    }
+}
+
+
+
+module.exports.bookToken = async(req,res)=>{
+    const {hid,pid,did}=req.params
+    try {
+        const hospital = await Hospital.findById(hid);
+        const doctor = await Doctor.findById(did)
+        const patient = await Patient.findById(pid)
+        doctor.token.add(pid)
+        doctor.save()
+        let date = new Date()
+        const newlog = new Logs({doctorId:did,hospitalId:hid,patientId:pid,date})
+        newlog.save()
+        hospital.logs.add(newlog._id)
+        patient.logs.add(newlog._id)
+        await hospital.save()
+        await patient.save()
+        res.status(200).send("Token Booked")
+    } catch (error) {
+        res.status(500).send(error.message)
     }
 }
