@@ -191,3 +191,29 @@ module.exports.bookToken = async(req,res)=>{
         res.status(500).send(error.message)
     }
 }
+
+module.exports.getLogs = async(req,res)=>{
+    const {id}=req.params
+    try {
+        const hospital = await Hospital.findById(id).populate({
+        path: 'logs',
+        populate: {
+            path: 'doctorId',      
+        }
+    }).populate({
+        path: 'logs',
+        populate: {
+            path: 'hospitalId',
+        }
+    }).populate({
+        path: 'logs',
+        populate: {
+            path: 'patientId',
+        }
+    })
+    res.status(200).json(hospital.logs)
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send(error.message)
+    }
+}
