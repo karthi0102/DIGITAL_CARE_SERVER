@@ -25,6 +25,7 @@ module.exports.signUp = async(req,res)=>{
     }
 }
 
+
 module.exports.login = async(req,res) =>{
     const {email,password} = req.body;
     try{
