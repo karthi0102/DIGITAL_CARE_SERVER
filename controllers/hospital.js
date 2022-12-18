@@ -8,14 +8,14 @@ const bcrypt = require('bcryptjs')
 
 module.exports.signUp = async(req,res)=>{
    
-    const {name,email,phone,address,password} = req.body
+    const {name,email,phone,address,password,district} = req.body
     try {
         const existinguser = await Hospital.findOne({email})
         if(existinguser){
             return res.status(400).send("User found already")
         }
         const hashPassword = await bcrypt.hash(password,12);
-        const newUser =  new Hospital({name,email,phone,address,password:hashPassword})
+        const newUser =  new Hospital({name,email,phone,address,district,password:hashPassword})
         await newUser.save()
         const token = jwt.sign({email:newUser.email},'token',{expiresIn:'1h'})
         res.status(200).json({result:newUser,token})
@@ -76,6 +76,20 @@ module.exports.MakeAvailable = async(req,res) =>{
     }
 }
 
+module.exports.CloseAvailable = async(req,res) =>{
+    const {Did,Hid} =req.params
+    try{
+        console.log(Did,Hid)
+        const doctor = await Doctor.findOneAndUpdate({_id:Did},{count:0,start:'',end:'',isOpen:false})
+        doctor.token=[]
+        await doctor.save()
+        const hospital = await Hospital.findById(Hid).populate('doctors')
+        res.status(200).json(hospital)
+    }catch(err){
+        res.status(500).json(err.message)
+    }
+}
+
 module.exports.getDoctor = async(req,res) =>{
     const {Did} =req.params
     try{
@@ -106,7 +120,7 @@ module.exports.deleteDoctor = async(req,res) =>{
         const hospital= await Hospital.findById(Hid)
         await hospital.doctors.pop(Did)
         await Doctor.deleteOne({_id:Did})
-        const hospitals = await Hospital.findById(Hid).populate('logs').populate('doctors')
+        const hospitals = await Hospital.findById(Hid).populate('doctors')
         res.status(200).json(hospitals)
     }catch(err){
         res.status(500).json(err.message)
@@ -115,11 +129,11 @@ module.exports.deleteDoctor = async(req,res) =>{
 
 module.exports.updateHospital = async(req,res) =>{
     const {Hid} =req.params
-    const {name,email,phone,address} = req.body
+    const {name,email,phone,address,district} = req.body
     try{
-        const hospitals = await Hospital.findOneAndUpdate({_id:Hid},{name,email,phone,address})
+        const hospitals = await Hospital.findOneAndUpdate({_id:Hid},{name,email,phone,address,district})
         hospitals.save()
-        const hospital = await Hospital.findById(Hid).populate('logs').populate('doctors')
+        const hospital = await Hospital.findById(Hid).populate('doctors')
         res.status(200).json(hospital)
     }catch(err){
         res.status(500).json(err.message)
@@ -173,6 +187,32 @@ module.exports.bookToken = async(req,res)=>{
         await hospital.save()
         await patient.save()
         res.status(200).send("Token Booked")
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send(error.message)
+    }
+}
+
+module.exports.getLogs = async(req,res)=>{
+    const {id}=req.params
+    try {
+        const hospital = await Hospital.findById(id).populate({
+        path: 'logs',
+        populate: {
+            path: 'doctorId',      
+        }
+    }).populate({
+        path: 'logs',
+        populate: {
+            path: 'hospitalId',
+        }
+    }).populate({
+        path: 'logs',
+        populate: {
+            path: 'patientId',
+        }
+    })
+    res.status(200).json(hospital.logs)
     } catch (error) {
         console.log(error.message)
         res.status(500).send(error.message)
